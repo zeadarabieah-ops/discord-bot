@@ -15,6 +15,10 @@ CHANNEL_ID = int(os.getenv("DISCORD_CHANNEL_ID"))
 SECRET = os.getenv("SECRET_KEY", "antar_2003")
 
 intents = discord.Intents.default()
+intents.message_content = True
+intents.members = True
+intents.presences = True
+
 bot = commands.Bot(command_prefix="!", intents=intents)
 
 app = Flask(__name__)
@@ -40,13 +44,14 @@ def create_invite():
     return jsonify({"error": "Failed to create invite"}), 500
 
 def run_flask():
-    app.run(host="0.0.0.0", port=5000)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
 
 threading.Thread(target=run_flask).start()
 
 @bot.event
 async def on_ready():
     print(f"✅ Logged in as {bot.user}")
-    print("🚀 Flask running on port 5000")
+    print("🚀 Flask running")
 
 bot.run(TOKEN)
